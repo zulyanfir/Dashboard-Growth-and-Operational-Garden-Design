@@ -60,7 +60,7 @@ from
 	master_desc_design
 where 
 	master_user.id_user = master_order_design.id_designer
-AND 
+and 
 	master_design.id_user = master_user.id_user
 and 
 	master_desc_design.id_design = master_design.id_design
