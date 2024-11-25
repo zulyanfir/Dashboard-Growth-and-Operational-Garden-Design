@@ -1,73 +1,70 @@
-with master_order_design as(
+with usr as(
 	select 
-		id_order,
-		id_designer,
-		size_area,
-		rating,
-		status,
-		price,
-		total_promo,
-		province,
-		city,
-		created_at,
-		updated_at
-	from order_design
-), master_user as( 
-	select
-		id_user,
+		id_user, 
 		name,
-		phone,
-		email,
 		status
 	from 
-		user
-), master_design as (
+		user 
+), prm as(
 	select 
-		id_design,
-		id_user,
+		id_promo,
+		code,
+		type,
+		total_promo
+	from 
+		promo_code pc
+), ctgr as(
+	select
+		id_category,
+		size
+	from 
+		category_size
+), dsg as(
+	select
+		id_design, 
+		id_category,
+		id_type,
 		design_name,
-		area,
-		status,
-		created_at,
-		updated_at,
-		deleted_at
+		status as design_status
 	from 
 		design
-), master_desc_design as (
+), ord_dsg as (
 	select 
-		id_desc,
-		id_design,
-		volume,
-		category,
-		denom,
-		item_name,
-		item_unit_qty,
-		item_unit_cost,
-		item_unit_price,
-		item_denom_cost,
-		item_denom_price,
-		item_total_cost,
-		item_total_price
+		id_order,
+		id_user,
+		id_promo,
+		id_category,
+		id_designer,
+		id_design_finish,
+		status as order_status
+	from
+		order_design
+), ctgr_dsg as(
+	select 
+		id_category_design,
+		name as category_name
 	from 
-		desc_design
+		category_design
+), det_ord_dsg as(
+	select 
+		id_order
+	from 
+		detail_order_design
 )
-select *
-from master_order_design
-left join master_user 
-  on master_user.id_user = master_order_design.id_designer
-left join master_design 
-  on master_design.id_user = master_user.id_user
-left join master_desc_design 
-  on master_desc_design.id_design = master_design.id_design
-union all
-select *
-from master_order_design
-right join master_user 
-  on master_user.id_user = master_order_design.id_designer
-right join master_design 
-  on master_design.id_user = master_user.id_user
-right join master_desc_design 
-  on master_desc_design.id_design = master_design.id_design;
-
-
-
+select 
+	*
+from 
+	ord_dsg
+left join
+	usr on usr.id_user = ord_dsg.id_user
+left join
+	prm on prm.id_promo = ord_dsg.id_promo
+left join
+	ctgr on ctgr.id_category = ord_dsg.id_category
+left join
+	dsg on dsg.id_design = ord_dsg.id_design_finish
+left join
+	det_ord_dsg on det_ord_dsg.id_order = ord_dsg.id_order
+left join
+	ctgr_dsg on ctgr_dsg.id_category_design = dsg.id_type
+limit 500;
