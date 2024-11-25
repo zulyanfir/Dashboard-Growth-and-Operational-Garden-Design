@@ -51,19 +51,23 @@ with master_order_design as(
 	from 
 		desc_design
 )
-select 
-	* 
-from
-	master_order_design, 
-	master_user, 
-	master_design, 
-	master_desc_design
-where 
-	master_user.id_user = master_order_design.id_designer
-and 
-	master_design.id_user = master_user.id_user
-and 
-	master_desc_design.id_design = master_design.id_design
-limit 200;
+select *
+from master_order_design
+left join master_user 
+  on master_user.id_user = master_order_design.id_designer
+left join master_design 
+  on master_design.id_user = master_user.id_user
+left join master_desc_design 
+  on master_desc_design.id_design = master_design.id_design
+union all
+select *
+from master_order_design
+right join master_user 
+  on master_user.id_user = master_order_design.id_designer
+right join master_design 
+  on master_design.id_user = master_user.id_user
+right join master_desc_design 
+  on master_desc_design.id_design = master_design.id_design;
+
 
 
