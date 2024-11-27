@@ -1,3 +1,8 @@
+/* Master Table 
+ (order_design,user, promo_code, catgeory_size,
+ design, detail_order_design, category_design,
+ address_components)
+ */
 with usr as(
 	select 
 		id_user, 
